@@ -55,6 +55,10 @@
   }
 }
 
+@utility center {
+  @apply flex items-center justify-center h-screen;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
