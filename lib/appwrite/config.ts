@@ -1,0 +1,15 @@
+export const ENDPOINT = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
+
+export const API_KEY = process.env.NEXT_PUBLIC_APPWRITE_API_KEY;
+
+export const PROJECT_ID = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID;
+
+export const BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID;
+
+export const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
+
+export const USERS_COLLECTION_ID =
+  process.env.NEXT_PUBLIC_APPWRITE_USERS_COLLECTION_ID;
+
+export const FILES_COLLECTION_ID =
+  process.env.NEXT_PUBLIC_APPWRITE_FILES_COLLECTION_ID;
