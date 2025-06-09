@@ -2,6 +2,7 @@
 
 import { ID, Query } from "node-appwrite";
 import { cookies } from "next/headers";
+import { AVATAR_PLACEHOLDER_URL } from "@/constants";
 import { config, createAdminClient } from "@/lib/appwrite";
 
 // create account flow
@@ -34,7 +35,7 @@ export const createAccount = async ({
         {
           fullName,
           email,
-          avatar: "https://avatar.iran.liara.run/public/15",
+          avatar: AVATAR_PLACEHOLDER_URL,
           accountId,
         }
       );

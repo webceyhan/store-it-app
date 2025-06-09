@@ -99,3 +99,5 @@ export const sortTypes: SortType[] = [
 ];
 
 export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+export const AVATAR_PLACEHOLDER_URL = "https://avatar.iran.liara.run/public/15";
