@@ -5,6 +5,7 @@ import { config, createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ID, Models, Query } from "node-appwrite";
+import { parseStringify } from "../utils";
 
 // create account flow
 // 1. user enters full name and email
@@ -142,8 +143,6 @@ const handleError = (error: unknown, message: string) => {
   console.error(message, error);
   throw error;
 };
-
-const parseStringify = <T>(data: T): T => JSON.parse(JSON.stringify(data));
 
 const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
