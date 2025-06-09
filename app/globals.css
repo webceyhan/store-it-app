@@ -358,7 +358,7 @@
   @apply flex-center min-w-fit gap-4;
 }
 @utility sign-out-button {
-  @apply flex-center h-[52px] min-w-[54px] items-center rounded-full bg-brand/10 p-0 text-brand shadow-none transition-all hover:bg-brand/20;
+  @apply flex-center! h-[52px]! min-w-[54px]! items-center! rounded-full! bg-brand/10! p-0! text-brand! shadow-none! transition-all! hover:bg-brand/20!;
 }
 
 /* Mobile Navigation */
@@ -381,7 +381,7 @@
   @apply flex text-light-100 gap-4 w-full justify-start items-center h5 px-6 h-[52px] rounded-full;
 }
 @utility mobile-sign-out-button {
-  @apply h5 flex h-[52px] w-full items-center gap-4 rounded-full bg-brand/10 px-6 text-brand shadow-none transition-all hover:bg-brand/20;
+  @apply h5! flex! h-[52px]! w-full! items-center! gap-4! rounded-full! bg-brand/10! px-6! text-brand! shadow-none! transition-all! hover:bg-brand/20!;
 }
 
 /* OTP Modal */
