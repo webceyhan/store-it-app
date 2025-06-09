@@ -1,8 +1,10 @@
-import Header from "@/components/Header";
-import MobileNavigation from "@/components/MobileNavigation";
-import Sidebar from "@/components/Sidebar";
-import { getCurrentUser, signOutUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
+
+import { getCurrentUser, signOutUser } from "@/lib/actions/user.actions";
+import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import MobileNavigation from "@/components/MobileNavigation";
 
 export default async function Layout({
   children,
@@ -25,6 +27,8 @@ export default async function Layout({
 
         <div className="main-content">{children}</div>
       </section>
+
+      <Toaster />
     </main>
   );
 }
