@@ -1,10 +1,8 @@
-"use server";
-
 import { cookies } from "next/headers";
 import { Account, Avatars, Client, Databases, Storage } from "node-appwrite";
 import { API_KEY, ENDPOINT, PROJECT_ID } from "./config";
 
-export * as appwriteConfig from "./config";
+export * as config from "./config";
 
 export const createSessionClient = async () => {
   const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
