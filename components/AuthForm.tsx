@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
+import { createAccount } from "@/lib/actions/user.actions";
 
 type FormType = "sign-in" | "sign-up";
 
@@ -37,6 +38,7 @@ export default function AuthForm({ type }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [acccountId, setAccountId] = useState<string | null>(null);
 
   // 1. define the form schema
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,8 +50,22 @@ export default function AuthForm({ type }: Props) {
   });
 
   // 2. define submit handler
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("Form submitted:", data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      const user = await createAccount({
+        fullName: data.fullName ?? "",
+        email: data.email,
+      });
+
+      setAccountId(user.accountId);
+    } catch (error) {
+      setErrorMessage("Failed to create account. Please try again.");
+    }
+
+    setIsLoading(false);
   };
 
   return (
