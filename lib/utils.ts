@@ -8,6 +8,11 @@ export function cn(...inputs: ClassValue[]) {
 export const parseStringify = <T>(data: T): T =>
   JSON.parse(JSON.stringify(data));
 
+export const handleError = (error: unknown, message: string) => {
+  console.error(message, error);
+  throw error;
+};
+
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 
 export const convertFileSize = (sizeInBytes: number, digits?: number) => {

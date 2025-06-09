@@ -1,12 +1,13 @@
 "use server";
 
-import { AVATAR_PLACEHOLDER_URL } from "@/constants";
-import { config, createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ID, Query } from "node-appwrite";
-import { parseStringify } from "../utils";
+
 import type { User } from "@/types";
+import { AVATAR_PLACEHOLDER_URL } from "@/constants";
+import { config, createAdminClient, createSessionClient } from "@/lib/appwrite";
+import { handleError, parseStringify } from "../utils";
 
 // create account flow
 // 1. user enters full name and email
@@ -132,11 +133,6 @@ export const signInUser = async ({ email }: { email: string }) => {
 };
 
 // HELPERS /////////////////////////////////////////////////////////////////////////////////////////
-
-const handleError = (error: unknown, message: string) => {
-  console.error(message, error);
-  throw error;
-};
 
 const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
