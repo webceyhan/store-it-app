@@ -4,8 +4,9 @@ import { AVATAR_PLACEHOLDER_URL } from "@/constants";
 import { config, createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ID, Models, Query } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import { parseStringify } from "../utils";
+import type { User } from "@/types";
 
 // create account flow
 // 1. user enters full name and email
@@ -14,13 +15,6 @@ import { parseStringify } from "../utils";
 // 4. this will send a secret key for creating a session, the secret key will be used to create a session
 // 5. return the user's accountId that will be used to login
 // 6. verify the OTP and authenticate the user
-
-export type User = Models.Document & {
-  fullName: string;
-  email: string;
-  avatar: string;
-  accountId: string;
-};
 
 export const createAccount = async ({
   fullName,
