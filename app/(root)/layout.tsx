@@ -19,7 +19,7 @@ export default async function Layout({
       <Sidebar {...currentUser} />
 
       <section className="flex h-screen flex-1 flex-col">
-        <MobileNavigation />
+        <MobileNavigation {...currentUser} />
 
         <Header />
 
