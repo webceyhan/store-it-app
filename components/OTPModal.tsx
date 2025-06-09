@@ -1,5 +1,9 @@
+"use client";
+
 import { MouseEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { sendEmailOTP, verifyOTP } from "@/lib/actions/user.actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +30,8 @@ type Props = {
 
 export default function OTPModal({ email, accountId }: Props) {
   // define variables
+  const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
@@ -36,7 +42,9 @@ export default function OTPModal({ email, accountId }: Props) {
 
     try {
       // call api to verify OTP
-      // todo..
+      const result = await verifyOTP({ accountId, password });
+
+      if (result?.sessionId) router.push("/");
     } catch (error) {
       console.error("Error submitting OTP:", error);
     }
@@ -46,7 +54,7 @@ export default function OTPModal({ email, accountId }: Props) {
 
   const handleResendOTP = async (e: MouseEvent<HTMLButtonElement>) => {
     // call api to resend OTP
-    // todo..
+    await sendEmailOTP({ email });
   };
 
   return (

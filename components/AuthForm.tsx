@@ -39,9 +39,7 @@ export default function AuthForm({ type }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [accountId, setAccountId] = useState<string | undefined>(
-    "test-account-id" // Placeholder for account ID
-  );
+  const [accountId, setAccountId] = useState<string | undefined>();
 
   // 1. define the form schema
   const form = useForm<z.infer<typeof formSchema>>({
@@ -63,7 +61,7 @@ export default function AuthForm({ type }: Props) {
         email: data.email,
       });
 
-      setAccountId(user.accountId);
+      setAccountId(user?.accountId);
     } catch (error) {
       setErrorMessage("Failed to create account. Please try again.");
     }

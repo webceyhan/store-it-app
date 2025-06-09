@@ -1,6 +1,7 @@
 "use server";
 
 import { ID, Query } from "node-appwrite";
+import { cookies } from "next/headers";
 import { config, createAdminClient } from "@/lib/appwrite";
 
 // create account flow
@@ -45,6 +46,42 @@ export const createAccount = async ({
   }
 };
 
+export const verifyOTP = async ({
+  accountId,
+  password,
+}: {
+  accountId: string;
+  password: string;
+}) => {
+  try {
+    const { account } = await createAdminClient();
+
+    const session = await account.createSession(accountId, password);
+
+    (await cookies()).set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+
+    return parseStringify({ sessionId: session.$id });
+  } catch (error) {
+    handleError(error, "Failed to verify OTP");
+  }
+};
+
+export const sendEmailOTP = async ({ email }: { email: string }) => {
+  const { account } = await createAdminClient();
+
+  try {
+    const session = await account.createEmailToken(ID.unique(), email);
+    return session.userId;
+  } catch (error) {
+    handleError(error, "Failed to send email OTP");
+  }
+};
+
 // HELPERS /////////////////////////////////////////////////////////////////////////////////////////
 
 const handleError = (error: unknown, message: string) => {
@@ -52,7 +89,7 @@ const handleError = (error: unknown, message: string) => {
   throw error;
 };
 
-const parseStringify = (data: unknown) => JSON.parse(JSON.stringify(data));
+const parseStringify = <T>(data: T): T => JSON.parse(JSON.stringify(data));
 
 const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
@@ -64,15 +101,4 @@ const getUserByEmail = async (email: string) => {
   );
 
   return result.documents[0] ?? null;
-};
-
-const sendEmailOTP = async ({ email }: { email: string }) => {
-  const { account } = await createAdminClient();
-
-  try {
-    const session = await account.createEmailToken(ID.unique(), email);
-    return session.userId;
-  } catch (error) {
-    handleError(error, "Failed to send email OTP");
-  }
 };
