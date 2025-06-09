@@ -1,17 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { createAccount } from "@/lib/actions/user.actions";
-import Link from "next/link";
-import Image from "next/image";
+import { createAccount, signInUser } from "@/lib/actions/user.actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,7 +28,7 @@ type Props = {
 const getFormSchema = (isSignUp: boolean) =>
   z.object({
     email: z.string().email(),
-    fullName: isSignUp ? z.string().min(2).max(50) : z.undefined(),
+    fullName: isSignUp ? z.string().min(2).max(50) : z.optional(z.string()),
   });
 
 export default function AuthForm({ type }: Props) {
@@ -56,10 +55,14 @@ export default function AuthForm({ type }: Props) {
     setErrorMessage("");
 
     try {
-      const user = await createAccount({
-        fullName: data.fullName ?? "",
-        email: data.email,
-      });
+      const user = isSignUp
+        ? await createAccount({
+            fullName: data.fullName ?? "",
+            email: data.email,
+          })
+        : await signInUser({
+            email: data.email,
+          });
 
       setAccountId(user?.accountId);
     } catch (error) {
