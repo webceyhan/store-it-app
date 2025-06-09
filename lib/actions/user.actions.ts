@@ -1,9 +1,10 @@
 "use server";
 
-import { ID, Models, Query } from "node-appwrite";
-import { cookies } from "next/headers";
 import { AVATAR_PLACEHOLDER_URL } from "@/constants";
 import { config, createAdminClient, createSessionClient } from "@/lib/appwrite";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { ID, Models, Query } from "node-appwrite";
 
 // create account flow
 // 1. user enters full name and email
@@ -104,6 +105,20 @@ export const getCurrentUser = async () => {
   if (user.total === 0) return null;
 
   return parseStringify(user.documents[0]);
+};
+
+export const signOutUser = async () => {
+  try {
+    const { account } = await createSessionClient();
+
+    await account.deleteSession("current");
+
+    (await cookies()).delete("appwrite-session");
+  } catch (error) {
+    handleError(error, "Failed to sign out user");
+  }
+
+  redirect("/sign-in");
 };
 
 // HELPERS /////////////////////////////////////////////////////////////////////////////////////////
