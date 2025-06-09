@@ -4,6 +4,9 @@ import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { createAccount } from "@/lib/actions/user.actions";
+import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,9 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import Link from "next/link";
-import { createAccount } from "@/lib/actions/user.actions";
+import OTPModal from "./OTPModal";
 
 type FormType = "sign-in" | "sign-up";
 
@@ -38,7 +39,9 @@ export default function AuthForm({ type }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [acccountId, setAccountId] = useState<string | null>(null);
+  const [accountId, setAccountId] = useState<string | undefined>(
+    "test-account-id" // Placeholder for account ID
+  );
 
   // 1. define the form schema
   const form = useForm<z.infer<typeof formSchema>>({
@@ -140,7 +143,7 @@ export default function AuthForm({ type }: Props) {
         </form>
       </Form>
 
-      {/* OTP verification to be implemented here. */}
+      <OTPModal email={form.getValues("email")} accountId={accountId} />
     </>
   );
 }
