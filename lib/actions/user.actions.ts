@@ -1,9 +1,9 @@
 "use server";
 
-import { ID, Query } from "node-appwrite";
+import { ID, Models, Query } from "node-appwrite";
 import { cookies } from "next/headers";
 import { AVATAR_PLACEHOLDER_URL } from "@/constants";
-import { config, createAdminClient } from "@/lib/appwrite";
+import { config, createAdminClient, createSessionClient } from "@/lib/appwrite";
 
 // create account flow
 // 1. user enters full name and email
@@ -12,6 +12,13 @@ import { config, createAdminClient } from "@/lib/appwrite";
 // 4. this will send a secret key for creating a session, the secret key will be used to create a session
 // 5. return the user's accountId that will be used to login
 // 6. verify the OTP and authenticate the user
+
+export type User = Models.Document & {
+  fullName: string;
+  email: string;
+  avatar: string;
+  accountId: string;
+};
 
 export const createAccount = async ({
   fullName,
@@ -81,6 +88,22 @@ export const sendEmailOTP = async ({ email }: { email: string }) => {
   } catch (error) {
     handleError(error, "Failed to send email OTP");
   }
+};
+
+export const getCurrentUser = async () => {
+  const { databases, account } = await createSessionClient();
+
+  const result = await account.get();
+
+  const user = await databases.listDocuments<User>(
+    config.DATABASE_ID,
+    config.USERS_COLLECTION_ID,
+    [Query.equal("accountId", result.$id)]
+  );
+
+  if (user.total === 0) return null;
+
+  return parseStringify(user.documents[0]);
 };
 
 // HELPERS /////////////////////////////////////////////////////////////////////////////////////////
