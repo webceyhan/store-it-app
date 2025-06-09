@@ -23,6 +23,7 @@ type Props = {
   email: string;
   avatar: string;
   accountId: string;
+  signOutUser: () => Promise<void>;
 };
 
 export default function MobileNavigation({
@@ -30,11 +31,12 @@ export default function MobileNavigation({
   email,
   avatar,
   accountId,
+  signOutUser,
 }: Props) {
   //
   const pathname = usePathname();
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header className="mobile-header">
@@ -112,15 +114,17 @@ export default function MobileNavigation({
             <div className="flex flex-col justify-between gap-5">
               <FileUploader />
 
-              <Button type="submit" className="mobile-sign-out-button">
-                <Image
-                  src="/assets/icons/logout.svg"
-                  alt="Sign Out"
-                  width={24}
-                  height={24}
-                />
-                <p>Logout</p>
-              </Button>
+              <form action={async () => signOutUser()}>
+                <Button type="submit" className="mobile-sign-out-button">
+                  <Image
+                    src="/assets/icons/logout.svg"
+                    alt="Sign Out"
+                    width={24}
+                    height={24}
+                  />
+                  <p>Logout</p>
+                </Button>
+              </form>
             </div>
           </SheetHeader>
         </SheetContent>

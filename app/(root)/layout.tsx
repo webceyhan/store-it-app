@@ -1,8 +1,8 @@
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/actions/user.actions";
 import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
 import MobileNavigation from "@/components/MobileNavigation";
+import Sidebar from "@/components/Sidebar";
+import { getCurrentUser, signOutUser } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
 
 export default async function Layout({
   children,
@@ -19,7 +19,7 @@ export default async function Layout({
       <Sidebar {...currentUser} />
 
       <section className="flex h-screen flex-1 flex-col">
-        <MobileNavigation {...currentUser} />
+        <MobileNavigation {...currentUser} signOutUser={signOutUser} />
 
         <Header />
 
