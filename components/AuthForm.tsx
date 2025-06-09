@@ -143,7 +143,9 @@ export default function AuthForm({ type }: Props) {
         </form>
       </Form>
 
-      <OTPModal email={form.getValues("email")} accountId={accountId} />
+      {accountId && (
+        <OTPModal email={form.getValues("email")} accountId={accountId} />
+      )}
     </>
   );
 }

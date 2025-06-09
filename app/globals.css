@@ -386,7 +386,7 @@
 
 /* OTP Modal */
 @utility otp-close-button {
-  @apply absolute -right-1 -top-7 cursor-pointer sm:-right-2 sm:-top-4;
+  @apply absolute -right-2.5 -top-2.5 cursor-pointer;
 }
 
 /* Search */
