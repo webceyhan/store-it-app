@@ -1,7 +1,6 @@
-import { ReactNode } from "react";
 import Image from "next/image";
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
       <section className="bg-brand max-lg:hidden flex items-center justify-center w-1/2 xl:w-2/5 p-10">
