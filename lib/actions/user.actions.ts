@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ID, Query } from "node-appwrite";
+import { ID, Models, Query } from "node-appwrite";
 
 import type { User } from "@/types";
 import { AVATAR_PLACEHOLDER_URL } from "@/constants";
@@ -92,7 +92,7 @@ export const getCurrentUser = async () => {
 
   const result = await account.get();
 
-  const user = await databases.listDocuments<User>(
+  const user = await databases.listDocuments<User & Models.Document>(
     config.DATABASE_ID,
     config.USERS_COLLECTION_ID,
     [Query.equal("accountId", result.$id)]
