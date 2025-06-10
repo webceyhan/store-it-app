@@ -1,3 +1,20 @@
+export type NavItem = {
+  name: string;
+  icon: string;
+  url: string;
+};
+
+export type ActionDropdownItem = {
+  label: string;
+  icon: string;
+  value: string;
+};
+
+export type SortType = {
+  label: string;
+  value: string;
+};
+
 export type User = {
   fullName: string;
   email: string;

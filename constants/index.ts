@@ -1,19 +1,4 @@
-type NavItem = {
-  name: string;
-  icon: string;
-  url: string;
-};
-
-type ActionDropdownItem = {
-  label: string;
-  icon: string;
-  value: string;
-};
-
-type SortType = {
-  label: string;
-  value: string;
-};
+import type { ActionDropdownItem, NavItem, SortType } from "@/types";
 
 export const navItems: NavItem[] = [
   {
