@@ -25,7 +25,7 @@ export default function Card({ file }: Props) {
         />
 
         <div className="flex flex-col items-end justify-between">
-          <ActionsDropdown />
+          <ActionsDropdown file={file} />
           <p className="body-1">{convertFileSize(file.size)}</p>
         </div>
       </div>
