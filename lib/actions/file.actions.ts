@@ -43,7 +43,7 @@ export const uploadFile = async ({
       name: bucketFile.name,
       url: constructFileUrl(bucketFile.$id),
       size: bucketFile.sizeOriginal,
-      ownerId,
+      owner: ownerId,
       accountId,
       bucketFileId: bucketFile.$id,
       users: [],
@@ -84,7 +84,7 @@ export const getFiles = async () => {
       config.FILES_COLLECTION_ID,
       [
         Query.or([
-          Query.equal("ownerId", currentUser.$id),
+          Query.equal("owner", currentUser.$id),
           Query.contains("users", currentUser.email),
         ]),
       ]

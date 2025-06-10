@@ -9,7 +9,7 @@ export type File = {
   name: string;
   type: string;
   url: string;
-  ownerId: string;
+  owner: User | string;
   accountId: string;
   bucketFileId: string;
   size?: number;
