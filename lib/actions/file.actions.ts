@@ -1,11 +1,12 @@
 "use server";
 
-import { ID } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { revalidatePath } from "next/cache";
 
 import type { File } from "@/types";
 import { config, createAdminClient } from "../appwrite";
+import { getCurrentUser } from "./user.actions";
 import {
   constructFileUrl,
   getFileType,
@@ -67,4 +68,32 @@ export const uploadFile = async ({
   } catch (error) {
     handleError(error, "Failed to upload file");
   }
+};
+
+export const getFiles = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      throw new Error("User not authenticated");
+    }
+
+    const files = await databases.listDocuments(
+      config.DATABASE_ID,
+      config.FILES_COLLECTION_ID,
+      [
+        Query.or([
+          Query.equal("ownerId", currentUser.$id),
+          Query.contains("users", currentUser.email),
+        ]),
+      ]
+    );
+
+    return parseStringify(files.documents);
+  } catch (error) {
+    handleError(error, "Failed to fetch files");
+  }
+
+  return [];
 };
