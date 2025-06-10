@@ -1,23 +1,25 @@
-import { File } from "@/types";
-import Link from "next/link";
 import { Models } from "node-appwrite";
-import Thumbnail from "./Thumbnail";
-import { convertFileSize } from "@/lib/utils";
+import Link from "next/link";
+
+import { constructFileUrl, convertFileSize } from "@/lib/utils";
 import ActionsDropdown from "./ActionsDropdown";
 import FormattedDateTime from "./FormattedDateTime";
+import Thumbnail from "./Thumbnail";
 
 type Props = {
   file: Models.Document;
 };
 
 export default function Card({ file }: Props) {
+  const fileUrl = constructFileUrl(file.bucketFileId);
+
   return (
-    <Link href={file.url} target="_blank" className="file-card">
+    <Link href={fileUrl} target="_blank" className="file-card">
       <div className="flex justify-between">
         <Thumbnail
           type={file.type}
           extension={file.extension}
-          url={file.url}
+          url={fileUrl}
           className="size-20!"
           imageClassName="size-11!"
         />
