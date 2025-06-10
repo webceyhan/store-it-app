@@ -1,5 +1,6 @@
 import { getFiles } from "@/lib/actions/file.actions";
 import Sort from "@/components/Sort";
+import Card from "@/components/Card";
 
 export default async function Page({ params }: { params: { type: string } }) {
   //
@@ -27,10 +28,7 @@ export default async function Page({ params }: { params: { type: string } }) {
       {files.length > 0 ? (
         <section className="file-list">
           {files.map((file) => (
-            <div key={file.$id} className="file-item">
-              <p className="file-name">{file.name}</p>
-              <p className="file-size">{file.size} MB</p>
-            </div>
+            <Card key={file.$id} file={file} />
           ))}
         </section>
       ) : (
