@@ -1,12 +1,16 @@
 "use client";
 
-import React, { MouseEvent, useCallback, useState } from "react";
+import { MouseEvent, useCallback, useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
+import { toast } from "sonner";
 
+import { MAX_FILE_SIZE } from "@/constants";
 import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
-import Thumbnail from "./Thumbnail";
+import { uploadFile } from "@/lib/actions/file.actions";
 import { Button } from "./ui/button";
+import Thumbnail from "./Thumbnail";
 
 type Props = {
   ownerId: string;
@@ -16,11 +20,45 @@ type Props = {
 
 export default function FileUploader({ ownerId, accountId, className }: Props) {
   //
+  const path = usePathname();
+
   const [files, setFiles] = useState<File[]>([]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles);
-  }, []);
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      setFiles(acceptedFiles);
+
+      const uploadedPromises = acceptedFiles.map(async (file) => {
+        // to be implemented: upload file to the server
+
+        if (file.size > MAX_FILE_SIZE) {
+          setFiles((prev) => prev.filter((f) => f.name !== file.name));
+
+          return toast.error(
+            <p className="body-2 text-white">
+              <span className="font-semibold">{file.name}</span>
+              is too large. Maximum file size is 50MB
+            </p>,
+            { className: "error-toast" }
+          );
+        }
+
+        return uploadFile({
+          file,
+          ownerId,
+          accountId,
+          path,
+        }).then((uploadedFile) => {
+          if (uploadedFile) {
+            setFiles((prev) => prev.filter((f) => f.name !== file.name));
+          }
+        });
+      });
+
+      await Promise.all(uploadedPromises);
+    },
+    [ownerId, accountId, path]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -87,12 +125,6 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
             );
           })}
         </ul>
-      )}
-
-      {isDragActive ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
       )}
     </div>
   );
