@@ -71,12 +71,12 @@ export const uploadFile = async ({
 };
 
 export const getFiles = async ({
-  types,
+  types= [],
   search,
   sort = "$createdAt-desc",
   limit = 100,
 }: {
-  types: string[];
+  types?: string[];
   search?: string;
   sort?: string;
   limit?: number;
