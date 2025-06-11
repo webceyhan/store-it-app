@@ -2,7 +2,7 @@
 
 import { Models } from "node-appwrite";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
 import { getFiles } from "@/lib/actions/file.actions";
@@ -25,6 +25,7 @@ export default function Search() {
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search");
   const router = useRouter();
+  const path = usePathname();
 
   const [term, setTerm] = useState<string>("");
   const [results, setResults] = useState<Models.Document[]>([]);
@@ -40,6 +41,14 @@ export default function Search() {
 
   useEffect(() => {
     const fetchFiles = async () => {
+      // reset search term if it is empty
+      if (!term) {
+        setResults([]);
+        setIsOpen(false);
+        router.push(path.replace(searchParams as any, ""));
+        return;
+      }
+
       const files = await getFiles({ search: term });
       setResults(files);
       setIsOpen(files.length > 0);
