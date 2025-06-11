@@ -8,7 +8,13 @@ import { Models } from "node-appwrite";
 import { actionsDropdownItems } from "@/constants";
 import { constructDownloadUrl } from "@/lib/utils";
 import { ActionDropdownItem } from "@/types";
-import { Dialog } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +23,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 type Props = {
   file: Models.Document;
@@ -26,7 +34,70 @@ export default function ActionsDropdown({ file }: Props) {
   //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [action, setAction] = useState<ActionDropdownItem | null>(null);
+  const [name, setName] = useState<string>(file.name);
+
+  const closeAllModals = () => {
+    setIsModalOpen(false);
+    setIsDropdownOpen(false);
+    setAction(null);
+    setName(file.name);
+  };
+
+  const handleActions = async () => {
+    // ... handle the action based on the selected item
+  };
+
+  const renderDialogContent = () => {
+    // skip if no action is selected
+    if (!action) return null;
+
+    const { value, label } = action;
+
+    return (
+      <DialogContent className="shad-dialog  gap-5">
+        <DialogHeader>
+          <DialogTitle className="text-center- text-light-100">
+            {label}
+          </DialogTitle>
+        </DialogHeader>
+
+        {value === "rename" && (
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        )}
+
+        {["rename", "delete", "share"].includes(value) && (
+          <DialogFooter className="flex flex-col md:items-center gap-3 md:flex-row">
+            <Button
+              className="modal-cancel-button"
+              variant="secondary"
+              onClick={closeAllModals}>
+              Cancel
+            </Button>
+
+            <Button className="modal-submit-button capitalize">
+              {value}
+
+              {isLoading && (
+                <Image
+                  className="animate-spin"
+                  src="/assets/icons/loader.svg"
+                  alt="Loading"
+                  width={24}
+                  height={24}
+                />
+              )}
+            </Button>
+          </DialogFooter>
+        )}
+      </DialogContent>
+    );
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -76,6 +147,8 @@ export default function ActionsDropdown({ file }: Props) {
           })}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {renderDialogContent()}
     </Dialog>
   );
 }
