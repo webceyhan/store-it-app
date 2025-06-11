@@ -10,15 +10,33 @@ import { constructFileUrl } from "@/lib/utils";
 import { Input } from "./ui/input";
 import Thumbnail from "./Thumbnail";
 import FormattedDateTime from "./FormattedDateTime";
+import { useRouter } from "next/navigation";
+
+const TYPE_CATEGORY_MAP = {
+  audio: "media",
+  video: "media",
+  image: "images",
+  document: "documents",
+  other: "others",
+};
 
 export default function Search() {
   //
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search");
+  const router = useRouter();
 
   const [term, setTerm] = useState<string>("");
   const [results, setResults] = useState<Models.Document[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleClickItem = (file: Models.Document) => {
+    setIsOpen(false);
+    setResults([]);
+
+    const type = file.type as keyof typeof TYPE_CATEGORY_MAP;
+    router.push(`${TYPE_CATEGORY_MAP[type]}?search=${term}`);
+  };
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -59,7 +77,8 @@ export default function Search() {
               results.map((file) => (
                 <li
                   key={file.$id}
-                  className="flex items-center justify-between">
+                  className="flex items-center justify-between"
+                  onClick={() => handleClickItem(file)}>
                   <div className="flex cursor-pointer items-center gap-4">
                     <Thumbnail
                       type={file.type}
