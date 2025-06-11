@@ -70,7 +70,17 @@ export const uploadFile = async ({
   }
 };
 
-export const getFiles = async ({ types }: { types: string[] }) => {
+export const getFiles = async ({
+  types,
+  search,
+  sort = "$createdAt-desc",
+  limit = 100,
+}: {
+  types: string[];
+  search?: string;
+  sort?: string;
+  limit?: number;
+}) => {
   try {
     const { databases } = await createAdminClient();
     const currentUser = await getCurrentUser();
@@ -79,15 +89,25 @@ export const getFiles = async ({ types }: { types: string[] }) => {
       throw new Error("User not authenticated");
     }
 
+    const [sortBy, sortDirection] = sort.split("-");
+
     const queries = [
       Query.or([
         Query.equal("owner", currentUser.$id),
         Query.contains("users", currentUser.email),
       ]),
+      Query.limit(limit),
+      sortDirection === "asc"
+        ? Query.orderAsc(sortBy)
+        : Query.orderDesc(sortBy),
     ];
 
     if (types.length > 0) {
       queries.push(Query.equal("type", types));
+    }
+
+    if (search) {
+      queries.push(Query.contains("name", search));
     }
 
     const files = await databases.listDocuments(

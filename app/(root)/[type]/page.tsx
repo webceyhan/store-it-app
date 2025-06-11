@@ -3,12 +3,19 @@ import { getFileTypesParams } from "@/lib/utils";
 import Sort from "@/components/Sort";
 import Card from "@/components/Card";
 
-export default async function Page({ params }: { params: { type: string } }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { type: string };
+  searchParams: { search?: string; sort?: string };
+}) {
   //
   const { type } = await params;
+  const { search, sort } = await searchParams;
 
   const types = getFileTypesParams(type);
-  const files = await getFiles({ types });
+  const files = await getFiles({ types, search, sort });
 
   return (
     <div className="page-container">
