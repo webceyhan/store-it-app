@@ -81,8 +81,18 @@ export default function ActionsDropdown({ file }: Props) {
     setIsLoading(false);
   };
 
-  const handleRemoveUser = (email: string) => {
-    setEmails((prev) => prev.filter((e) => e !== email));
+  const handleRemoveUser = async (email: string) => {
+    const updatedEmails = emails.filter((e) => e !== email);
+
+    const success = await updateFileUsers({
+      fileId: file.$id,
+      users: updatedEmails,
+      path,
+    });
+
+    if (success) setEmails(updatedEmails);
+
+    closeAllModals();
   };
 
   const renderDialogContent = () => {
