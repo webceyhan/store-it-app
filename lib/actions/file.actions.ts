@@ -97,3 +97,33 @@ export const getFiles = async () => {
 
   return [];
 };
+
+export const renameFile = async ({
+  fileId,
+  name,
+  extension,
+  path,
+}: {
+  fileId: string;
+  name: string;
+  extension: string;
+  path: string;
+}) => {
+  const { databases } = await createAdminClient();
+
+  try {
+    const updatedFile = await databases.updateDocument(
+      config.DATABASE_ID,
+      config.FILES_COLLECTION_ID,
+      fileId,
+      {
+        name: `${name}.${extension}`,
+      }
+    );
+
+    revalidatePath(path);
+    return parseStringify(updatedFile);
+  } catch (error) {
+    handleError(error, "Failed to rename file");
+  }
+};

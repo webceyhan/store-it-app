@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { renameFile } from "@/lib/actions/file.actions";
+import { usePathname } from "next/navigation";
 
 type Props = {
   file: Models.Document;
@@ -32,6 +34,8 @@ type Props = {
 
 export default function ActionsDropdown({ file }: Props) {
   //
+  const path = usePathname();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +50,22 @@ export default function ActionsDropdown({ file }: Props) {
   };
 
   const handleActions = async () => {
-    // ... handle the action based on the selected item
+    if (!action) return;
+
+    setIsLoading(true);
+
+    const actions = {
+      rename: () =>
+        renameFile({ fileId: file.$id, name, extension: file.extension, path }),
+      share: () => console.log("Share action not implemented yet"),
+      delete: () => console.log("Delete action not implemented yet"),
+    };
+
+    const result = await actions[action.value as keyof typeof actions]();
+
+    if (!!result) closeAllModals();
+
+    setIsLoading(false);
   };
 
   const renderDialogContent = () => {
@@ -80,7 +99,9 @@ export default function ActionsDropdown({ file }: Props) {
               Cancel
             </Button>
 
-            <Button className="modal-submit-button capitalize">
+            <Button
+              className="modal-submit-button capitalize"
+              onClick={handleActions}>
               {value}
 
               {isLoading && (
