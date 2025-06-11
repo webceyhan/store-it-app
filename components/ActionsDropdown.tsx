@@ -7,7 +7,11 @@ import { usePathname } from "next/navigation";
 import { Models } from "node-appwrite";
 
 import { actionsDropdownItems } from "@/constants";
-import { renameFile, updateFileUsers } from "@/lib/actions/file.actions";
+import {
+  deleteFile,
+  renameFile,
+  updateFileUsers,
+} from "@/lib/actions/file.actions";
 import { constructDownloadUrl } from "@/lib/utils";
 import { ActionDropdownItem } from "@/types";
 
@@ -71,7 +75,12 @@ export default function ActionsDropdown({ file }: Props) {
           users: emails,
           path,
         }),
-      delete: () => console.log("Delete action not implemented yet"),
+      delete: () =>
+        deleteFile({
+          fileId: file.$id,
+          bucketFileId: file.bucketFileId,
+          path,
+        }),
     };
 
     const result = await actions[action.value as keyof typeof actions]();
@@ -125,6 +134,14 @@ export default function ActionsDropdown({ file }: Props) {
             onChange={setEmails}
             onRemove={handleRemoveUser}
           />
+        )}
+
+        {value === "delete" && (
+          <p className="delete-confirmation">
+            Are you sure you want to delete{" "}
+            <span className="delete-file-name">{file.name}</span>? This action
+            cannot be undone.
+          </p>
         )}
 
         {["rename", "delete", "share"].includes(value) && (
