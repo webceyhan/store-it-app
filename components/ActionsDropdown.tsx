@@ -3,11 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Models } from "node-appwrite";
 
 import { actionsDropdownItems } from "@/constants";
+import { renameFile, updateFileUsers } from "@/lib/actions/file.actions";
 import { constructDownloadUrl } from "@/lib/utils";
 import { ActionDropdownItem } from "@/types";
+
 import {
   Dialog,
   DialogContent,
@@ -23,11 +26,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { renameFile } from "@/lib/actions/file.actions";
-import { usePathname } from "next/navigation";
-import { FileDetails } from "./ActionsModalContent";
+import { Input } from "./ui/input";
+import { FileDetails, ShareInput } from "./ActionsModalContent";
 
 type Props = {
   file: Models.Document;
@@ -42,6 +43,7 @@ export default function ActionsDropdown({ file }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [action, setAction] = useState<ActionDropdownItem | null>(null);
   const [name, setName] = useState<string>(file.name);
+  const [emails, setEmails] = useState<string[]>([]);
 
   const closeAllModals = () => {
     setIsModalOpen(false);
@@ -57,8 +59,18 @@ export default function ActionsDropdown({ file }: Props) {
 
     const actions = {
       rename: () =>
-        renameFile({ fileId: file.$id, name, extension: file.extension, path }),
-      share: () => console.log("Share action not implemented yet"),
+        renameFile({
+          fileId: file.$id,
+          name,
+          extension: file.extension,
+          path,
+        }),
+      share: () =>
+        updateFileUsers({
+          fileId: file.$id,
+          users: emails,
+          path,
+        }),
       delete: () => console.log("Delete action not implemented yet"),
     };
 
@@ -67,6 +79,10 @@ export default function ActionsDropdown({ file }: Props) {
     if (!!result) closeAllModals();
 
     setIsLoading(false);
+  };
+
+  const handleRemoveUser = (email: string) => {
+    setEmails((prev) => prev.filter((e) => e !== email));
   };
 
   const renderDialogContent = () => {
@@ -92,6 +108,14 @@ export default function ActionsDropdown({ file }: Props) {
         )}
 
         {value === "details" && <FileDetails file={file} />}
+
+        {value === "share" && (
+          <ShareInput
+            file={file}
+            onChange={setEmails}
+            onRemove={handleRemoveUser}
+          />
+        )}
 
         {["rename", "delete", "share"].includes(value) && (
           <DialogFooter className="flex flex-col md:items-center gap-3 md:flex-row">
