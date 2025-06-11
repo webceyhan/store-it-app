@@ -70,7 +70,7 @@ export const uploadFile = async ({
   }
 };
 
-export const getFiles = async () => {
+export const getFiles = async ({ types }: { types: string[] }) => {
   try {
     const { databases } = await createAdminClient();
     const currentUser = await getCurrentUser();
@@ -79,15 +79,21 @@ export const getFiles = async () => {
       throw new Error("User not authenticated");
     }
 
+    const queries = [
+      Query.or([
+        Query.equal("owner", currentUser.$id),
+        Query.contains("users", currentUser.email),
+      ]),
+    ];
+
+    if (types.length > 0) {
+      queries.push(Query.equal("type", types));
+    }
+
     const files = await databases.listDocuments(
       config.DATABASE_ID,
       config.FILES_COLLECTION_ID,
-      [
-        Query.or([
-          Query.equal("owner", currentUser.$id),
-          Query.contains("users", currentUser.email),
-        ]),
-      ]
+      queries
     );
 
     return parseStringify(files.documents);
@@ -179,7 +185,7 @@ export const deleteFile = async ({
     }
 
     await storage.deleteFile(config.BUCKET_ID, bucketFileId);
-    
+
     revalidatePath(path);
     return parseStringify({ status: "success" });
   } catch (error) {
