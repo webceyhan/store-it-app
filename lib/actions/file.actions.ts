@@ -71,7 +71,7 @@ export const uploadFile = async ({
 };
 
 export const getFiles = async ({
-  types= [],
+  types = [],
   search,
   sort = "$createdAt-desc",
   limit = 100,
@@ -210,5 +210,44 @@ export const deleteFile = async ({
     return parseStringify({ status: "success" });
   } catch (error) {
     handleError(error, "Failed to delete file");
+  }
+};
+
+export const getTotalSpaceUsed = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      throw new Error("User not authenticated");
+    }
+
+    const files = await databases.listDocuments(
+      config.DATABASE_ID,
+      config.FILES_COLLECTION_ID,
+      [Query.equal("owner", currentUser.$id), Query.orderAsc("$updatedAt")]
+    );
+
+    const usageByType = files.documents.reduce(
+      (acc, file) => ({
+        ...acc,
+        [file.type]: {
+          count: acc[file.type as keyof typeof acc].count + 1,
+          size: acc[file.type as keyof typeof acc].size + file.size,
+          latestDate: file.$updatedAt,
+        },
+      }),
+      {
+        document: { count: 0, size: 0, latestDate: null },
+        image: { count: 0, size: 0, latestDate: null },
+        video: { count: 0, size: 0, latestDate: null },
+        audio: { count: 0, size: 0, latestDate: null },
+        other: { count: 0, size: 0, latestDate: null },
+      }
+    );
+
+    return parseStringify(usageByType);
+  } catch (error) {
+    handleError(error, "Failed to fetch total space used");
   }
 };
