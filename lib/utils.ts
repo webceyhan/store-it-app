@@ -202,6 +202,7 @@ export const getUsageSummary = (totalSpace: any) => {
   return [
     {
       title: "Documents",
+      count: totalSpace.document.count,
       size: totalSpace.document.size,
       latestDate: totalSpace.document.latestDate,
       icon: "/assets/icons/file-document-light.svg",
@@ -209,6 +210,7 @@ export const getUsageSummary = (totalSpace: any) => {
     },
     {
       title: "Images",
+      count: totalSpace.image.count,
       size: totalSpace.image.size,
       latestDate: totalSpace.image.latestDate,
       icon: "/assets/icons/file-image-light.svg",
@@ -216,6 +218,7 @@ export const getUsageSummary = (totalSpace: any) => {
     },
     {
       title: "Media",
+      count: totalSpace.video.count + totalSpace.audio.count,
       size: totalSpace.video.size + totalSpace.audio.size,
       latestDate:
         totalSpace.video.latestDate > totalSpace.audio.latestDate
@@ -226,6 +229,7 @@ export const getUsageSummary = (totalSpace: any) => {
     },
     {
       title: "Others",
+      count: totalSpace.other.count,
       size: totalSpace.other.size,
       latestDate: totalSpace.other.latestDate,
       icon: "/assets/icons/file-other-light.svg",
