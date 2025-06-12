@@ -2,6 +2,7 @@
 
 import { Models } from "node-appwrite";
 import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -30,32 +31,33 @@ export default function Search() {
   const [term, setTerm] = useState<string>("");
   const [results, setResults] = useState<Models.Document[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [debouncedTerm] = useDebounce(term, 500);
 
   const handleClickItem = (file: Models.Document) => {
     setIsOpen(false);
     setResults([]);
 
     const type = file.type as keyof typeof TYPE_CATEGORY_MAP;
-    router.push(`${TYPE_CATEGORY_MAP[type]}?search=${term}`);
+    router.push(`${TYPE_CATEGORY_MAP[type]}?search=${debouncedTerm}`);
   };
 
   useEffect(() => {
     const fetchFiles = async () => {
       // reset search term if it is empty
-      if (!term) {
+      if (debouncedTerm.length === 0) {
         setResults([]);
         setIsOpen(false);
         router.push(path.replace(searchParams as any, ""));
         return;
       }
 
-      const files = await getFiles({ search: term });
+      const files = await getFiles({ search: debouncedTerm });
       setResults(files);
       setIsOpen(files.length > 0);
     };
 
     fetchFiles();
-  }, [term]);
+  }, [debouncedTerm]);
 
   useEffect(() => {
     if (searchTerm) {
