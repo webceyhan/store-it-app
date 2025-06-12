@@ -1,5 +1,5 @@
 import { getFiles } from "@/lib/actions/file.actions";
-import { getFileTypesParams } from "@/lib/utils";
+import { convertFileSize, getFileTypesParams } from "@/lib/utils";
 import Sort from "@/components/Sort";
 import Card from "@/components/Card";
 
@@ -17,6 +17,8 @@ export default async function Page({
   const types = getFileTypesParams(type);
   const files = await getFiles({ types, search, sort });
 
+  const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+
   return (
     <div className="page-container">
       <section className="w-full">
@@ -24,7 +26,7 @@ export default async function Page({
 
         <div className="total-size-section">
           <p className="body-1">
-            Total: <span className="h5">0 MB</span>
+            Total: <span className="h5">{convertFileSize(totalSize)}</span>
           </p>
 
           <div className="sort-container">
