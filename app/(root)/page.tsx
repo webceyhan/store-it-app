@@ -1,15 +1,28 @@
+import { Models } from "node-appwrite";
 import Image from "next/image";
 import Link from "next/link";
 
-import FormattedDateTime from "@/components/FormattedDateTime";
-import StatsChart from "@/components/StatsChart";
+import {
+  constructFileUrl,
+  convertFileSize,
+  getUsageSummary,
+} from "@/lib/utils";
+import { getFiles, getTotalSpaceUsed } from "@/lib/actions/file.actions";
 import { Separator } from "@/components/ui/separator";
-import { getTotalSpaceUsed } from "@/lib/actions/file.actions";
-import { convertFileSize, getUsageSummary } from "@/lib/utils";
+import FormattedDateTime from "@/components/FormattedDateTime";
+import ActionsDropdown from "@/components/ActionsDropdown";
+import StatsChart from "@/components/StatsChart";
+import Thumbnail from "@/components/Thumbnail";
 
 export default async function Dashboard() {
   //
-  const usageData = await getTotalSpaceUsed();
+  const [usageData, files] = await Promise.all([
+    getTotalSpaceUsed(),
+    getFiles({
+      limit: 10,
+    }),
+  ]);
+
   const summaryList = getUsageSummary(usageData);
 
   return (
@@ -34,10 +47,11 @@ export default async function Dashboard() {
                   <h4 className="summary-type-size">{convertFileSize(size)}</h4>
                 </div>
 
-                <p className="text-end text-xs text-light-200 z-10 relative -mt-2.5">{count} files</p>
+                <p className="text-end text-xs text-light-200 z-10 relative -mt-2.5">
+                  {count} files
+                </p>
 
                 <h5 className="summary-type-title">{title} </h5>
-
 
                 <Separator className="bg-light-400" />
 
@@ -48,7 +62,40 @@ export default async function Dashboard() {
         </ul>
       </section>
 
-      <section>to be implemented...</section>
+      {/* Recent files uploaded */}
+      <section className="dashboard-recent-files">
+        <h2 className="h3 xl:h2 text-light-100">Recent files uploaded</h2>
+        {files.length > 0 ? (
+          <ul className="mt-5 flex flex-col gap-5">
+            {files.map((file: Models.Document) => (
+              <Link
+                href={file.url}
+                target="_blank"
+                className="flex items-center gap-3"
+                key={file.$id}>
+                <Thumbnail
+                  type={file.type}
+                  extension={file.extension}
+                  url={constructFileUrl(file.bucketFileId)}
+                />
+
+                <div className="recent-file-details">
+                  <div className="flex flex-col gap-1">
+                    <p className="recent-file-name">{file.name}</p>
+                    <FormattedDateTime
+                      date={file.$createdAt}
+                      className="caption"
+                    />
+                  </div>
+                  <ActionsDropdown file={file} />
+                </div>
+              </Link>
+            ))}
+          </ul>
+        ) : (
+          <p className="empty-list">No files uploaded</p>
+        )}
+      </section>
     </div>
   );
 }
