@@ -7,8 +7,8 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { type: string };
-  searchParams: { search?: string; sort?: string };
+  params: Promise<{ type: string }>;
+  searchParams: Promise<{ search?: string; sort?: string }>;
 }) {
   //
   const { type } = await params;
