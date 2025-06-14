@@ -16,7 +16,7 @@ export default async function Layout({
   //
   const currentUser = await getCurrentUser();
 
-  if (!currentUser) return redirect("/auth/sign-in");
+  if (!currentUser) return redirect("/sign-in");
 
   return (
     <main className="flex h-screen">
