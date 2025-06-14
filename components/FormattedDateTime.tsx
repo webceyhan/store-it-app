@@ -1,7 +1,7 @@
 import { cn, formatDateTime } from "@/lib/utils";
 
 type Props = {
-  date: string;
+  date: string | null;
   className?: string;
 };
 
