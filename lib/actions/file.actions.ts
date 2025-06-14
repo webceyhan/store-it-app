@@ -244,7 +244,14 @@ export const getTotalSpaceUsed = async () => {
         audio: { count: 0, size: 0, latestDate: null },
         other: { count: 0, size: 0, latestDate: null },
       }
-    );
+    ) as Record<
+      string,
+      {
+        count: number;
+        size: number;
+        latestDate: string | null;
+      }
+    >;
 
     return parseStringify(usageByType);
   } catch (error) {

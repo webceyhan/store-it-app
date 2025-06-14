@@ -198,40 +198,53 @@ export const constructDownloadUrl = (bucketFileId: string) => {
 };
 
 // DASHBOARD UTILS
-export const getUsageSummary = (totalSpace: any) => {
+export const getUsageSummary = ({
+  document,
+  image,
+  video,
+  audio,
+  other,
+}: Record<
+  string,
+  {
+    count: number;
+    size: number;
+    latestDate: string | null;
+  }
+>) => {
   return [
     {
       title: "Documents",
-      count: totalSpace.document.count,
-      size: totalSpace.document.size,
-      latestDate: totalSpace.document.latestDate,
+      count: document.count,
+      size: document.size,
+      latestDate: document.latestDate,
       icon: "/assets/icons/file-document-light.svg",
       url: "/documents",
     },
     {
       title: "Images",
-      count: totalSpace.image.count,
-      size: totalSpace.image.size,
-      latestDate: totalSpace.image.latestDate,
+      count: image.count,
+      size: image.size,
+      latestDate: image.latestDate,
       icon: "/assets/icons/file-image-light.svg",
       url: "/images",
     },
     {
       title: "Media",
-      count: totalSpace.video.count + totalSpace.audio.count,
-      size: totalSpace.video.size + totalSpace.audio.size,
+      count: video.count + audio.count,
+      size: video.size + audio.size,
       latestDate:
-        totalSpace.video.latestDate > totalSpace.audio.latestDate
-          ? totalSpace.video.latestDate
-          : totalSpace.audio.latestDate,
+        video.latestDate! > audio.latestDate!
+          ? video.latestDate
+          : audio.latestDate!,
       icon: "/assets/icons/file-video-light.svg",
       url: "/media",
     },
     {
       title: "Others",
-      count: totalSpace.other.count,
-      size: totalSpace.other.size,
-      latestDate: totalSpace.other.latestDate,
+      count: other.count,
+      size: other.size,
+      latestDate: other.latestDate,
       icon: "/assets/icons/file-other-light.svg",
       url: "/others",
     },

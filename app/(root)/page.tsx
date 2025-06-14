@@ -23,7 +23,7 @@ export default async function Dashboard() {
     }),
   ]);
 
-  const summaryList = getUsageSummary(usageData);
+  const summaryList = getUsageSummary(usageData!);
 
   return (
     <div className="dashboard-container">
