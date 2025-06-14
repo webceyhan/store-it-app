@@ -19,6 +19,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 type Props = {
+  $id: string;
   fullName: string;
   email: string;
   avatar: string;
@@ -27,6 +28,7 @@ type Props = {
 };
 
 export default function MobileNavigation({
+  $id: userId,
   fullName,
   email,
   avatar,
@@ -112,7 +114,7 @@ export default function MobileNavigation({
             <Separator className="my-5 bg-light-200/20" />
 
             <div className="flex flex-col justify-between gap-5">
-              <FileUploader />
+              <FileUploader ownerId={userId} accountId={accountId} />
 
               <form action={async () => signOutUser()}>
                 <Button type="submit" className="mobile-sign-out-button">
