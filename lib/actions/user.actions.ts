@@ -88,19 +88,24 @@ export const sendEmailOTP = async ({ email }: { email: string }) => {
 };
 
 export const getCurrentUser = async () => {
-  const { databases, account } = await createSessionClient();
+  try {
+    const { databases, account } = await createSessionClient();
 
-  const result = await account.get();
+    const result = await account.get();
 
-  const user = await databases.listDocuments<User & Models.Document>(
-    config.DATABASE_ID,
-    config.USERS_COLLECTION_ID,
-    [Query.equal("accountId", result.$id)]
-  );
+    const user = await databases.listDocuments<User & Models.Document>(
+      config.DATABASE_ID,
+      config.USERS_COLLECTION_ID,
+      [Query.equal("accountId", result.$id)]
+    );
 
-  if (user.total === 0) return null;
+    if (user.total === 0) return null;
 
-  return parseStringify(user.documents[0]);
+    return parseStringify(user.documents[0]);
+  } catch (error) {
+    handleError(error, "Failed to get current user");
+  }
+  return null;
 };
 
 export const signOutUser = async () => {
