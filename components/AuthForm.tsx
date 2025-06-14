@@ -66,6 +66,7 @@ export default function AuthForm({ type }: Props) {
 
       setAccountId(user?.accountId);
     } catch (error) {
+      console.error("Error during authentication:", error);
       setErrorMessage("Failed to create account. Please try again.");
     }
 

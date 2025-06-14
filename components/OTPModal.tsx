@@ -7,7 +7,6 @@ import { sendEmailOTP, verifyOTP } from "@/lib/actions/user.actions";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -18,7 +17,6 @@ import {
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "./ui/button";
@@ -52,7 +50,7 @@ export default function OTPModal({ email, accountId }: Props) {
     setIsLoading(false);
   };
 
-  const handleResendOTP = async (e: MouseEvent<HTMLButtonElement>) => {
+  const handleResendOTP = async () => {
     // call api to resend OTP
     await sendEmailOTP({ email });
   };
@@ -75,7 +73,7 @@ export default function OTPModal({ email, accountId }: Props) {
           </AlertDialogTitle>
 
           <AlertDialogDescription className="subtitle-2 text-center">
-            We've sent a code to
+            We&apos;ve sent a code to
             <span className="pl-1 text-brand">{email}</span>.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -109,7 +107,7 @@ export default function OTPModal({ email, accountId }: Props) {
           </AlertDialogAction>
 
           <div className="subtitle-2 mt-2 text-center text-light-100">
-            Didn't get a code?
+            Didn&apos;t get a code?
             <Button
               type="button"
               variant="link"

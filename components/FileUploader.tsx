@@ -60,7 +60,7 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
     [ownerId, accountId, path]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleRemoveFile = (
     event: MouseEvent<HTMLImageElement>,
