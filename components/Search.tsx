@@ -57,7 +57,7 @@ export default function Search() {
     };
 
     fetchFiles();
-  }, [debouncedTerm]);
+  }, [debouncedTerm, path, router]);
 
   useEffect(() => {
     if (searchTerm) {
