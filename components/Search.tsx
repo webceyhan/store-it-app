@@ -47,7 +47,7 @@ export default function Search() {
       if (debouncedTerm.length === 0) {
         setResults([]);
         setIsOpen(false);
-        router.push(path.replace(searchParams as any, ""));
+        router.push(path.split("?")[0]);
         return;
       }
 
